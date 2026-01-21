@@ -20,38 +20,69 @@ logo_base64 = get_logo_base64()
 # 커스텀 CSS - Dark Tech 스타일 (완전 재설계)
 st.markdown(f"""
 <style>
-    /* 웹폰트 로드 */
-    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+    /* 웹폰트 로드 - AI 앱 스타일 폰트 */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
     
-    /* Streamlit 기본 푸터만 숨기기 (사이드바 메뉴는 유지) */
+    /* Streamlit 기본 푸터만 숨기기 */
     footer {{visibility: hidden;}}
-    header {{visibility: hidden;}}
     
-    /* 사이드바 토글 버튼 스타일 개선 */
-    [data-testid="stSidebar"] [data-testid="collapsedControl"] {{
-        background: rgba(102, 126, 234, 0.2);
-        border: 1px solid rgba(102, 126, 234, 0.4);
-        border-radius: 8px;
-        transition: all 0.3s ease;
+    /* 헤더의 텍스트는 숨기되, 버튼은 유지 */
+    header .css-1d391kg {{visibility: hidden;}}
+    header [data-testid="stHeader"] > div:first-child {{visibility: hidden;}}
+    
+    /* 사이드바 토글 버튼 - 항상 보이도록 강제 */
+    button[data-testid="baseButton-header"],
+    [data-testid="collapsedControl"],
+    button[kind="header"],
+    [data-testid="stHeader"] button {{
+        visibility: visible !important;
+        display: flex !important;
+        opacity: 1 !important;
+        z-index: 999 !important;
+        position: fixed !important;
+        top: 1rem !important;
+        left: 1rem !important;
+        background: rgba(6, 182, 212, 0.15) !important;
+        border: 1.5px solid rgba(6, 182, 212, 0.3) !important;
+        border-radius: 12px !important;
+        padding: 0.6rem 0.8rem !important;
+        box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15) !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+        backdrop-filter: blur(10px) !important;
     }}
     
-    [data-testid="stSidebar"] [data-testid="collapsedControl"]:hover {{
-        background: rgba(102, 126, 234, 0.3);
-        box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+    button[data-testid="baseButton-header"]:hover,
+    [data-testid="collapsedControl"]:hover,
+    button[kind="header"]:hover {{
+        background: rgba(6, 182, 212, 0.25) !important;
+        box-shadow: 0 0 30px rgba(6, 182, 212, 0.3) !important;
+        transform: scale(1.05) !important;
+        border-color: rgba(6, 182, 212, 0.5) !important;
     }}
     
-    /* 전체 배경 - 회로 기판 패턴 + 깊이 있는 다크 그라데이션 */
+    /* 햄버거 아이콘 색상 */
+    button[data-testid="baseButton-header"] svg,
+    [data-testid="collapsedControl"] svg,
+    button[kind="header"] svg {{
+        color: #06b6d4 !important;
+        stroke: #06b6d4 !important;
+        fill: #06b6d4 !important;
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }}
+    
+    /* 전체 배경 - 세련된 다크모드 그라데이션 */
     .stApp {{
         background: 
-            /* 회로 기판 패턴 (SVG) */
-            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='circuit' x='0' y='0' width='100' height='100' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0 50h100M50 0v100' stroke='rgba(102,126,234,0.05)' stroke-width='0.5'/%3E%3Ccircle cx='25' cy='25' r='1' fill='rgba(102,126,234,0.1)'/%3E%3Ccircle cx='75' cy='75' r='1' fill='rgba(118,75,162,0.1)'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23circuit)'/%3E%3C/svg%3E"),
-            /* 그라데이션 레이어 */
-            radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(240, 147, 251, 0.08) 0%, transparent 70%),
-            linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 25%, #16213e 50%, #0f1419 75%, #0a0a0f 100%);
+            /* 미묘한 그라데이션 레이어 */
+            radial-gradient(ellipse at top left, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at top right, rgba(14, 165, 233, 0.05) 0%, transparent 50%),
+            radial-gradient(ellipse at bottom center, rgba(20, 184, 166, 0.04) 0%, transparent 60%),
+            /* 메인 다크 그라데이션 */
+            linear-gradient(180deg, #0f0f1e 0%, #1a1a2e 30%, #1e1e3e 60%, #0f0f1e 100%);
         background-attachment: fixed;
-        font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         min-height: 100vh;
     }}
     
@@ -82,43 +113,44 @@ st.markdown(f"""
         transform: translateX(-50%);
         width: 400px;
         height: 200px;
-        background: radial-gradient(ellipse, rgba(102, 126, 234, 0.2) 0%, transparent 70%);
+        background: radial-gradient(ellipse, rgba(6, 182, 212, 0.12) 0%, transparent 70%);
         filter: blur(60px);
         z-index: -1;
-        animation: pulse 3s ease-in-out infinite;
+        animation: pulse 4s ease-in-out infinite;
     }}
     
     @keyframes pulse {{
-        0%, 100% {{ opacity: 0.6; }}
-        50% {{ opacity: 1; }}
+        0%, 100% {{ opacity: 0.5; }}
+        50% {{ opacity: 0.8; }}
     }}
     
     .logo-container {{
         width: 80px;
         height: 80px;
-        border-radius: 20px;
+        border-radius: 18px;
         overflow: hidden;
         box-shadow: 
-            0 8px 32px rgba(102, 126, 234, 0.4),
-            0 0 40px rgba(102, 126, 234, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        border: 2px solid rgba(102, 126, 234, 0.5);
+            0 8px 32px rgba(6, 182, 212, 0.25),
+            0 0 30px rgba(6, 182, 212, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(6, 182, 212, 0.35);
         position: relative;
-        animation: glow 2s ease-in-out infinite alternate;
+        animation: glow 3s ease-in-out infinite alternate;
+        backdrop-filter: blur(10px);
     }}
     
     @keyframes glow {{
         from {{
             box-shadow: 
-                0 8px 32px rgba(102, 126, 234, 0.4),
-                0 0 40px rgba(102, 126, 234, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                0 8px 32px rgba(6, 182, 212, 0.25),
+                0 0 30px rgba(6, 182, 212, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }}
         to {{
             box-shadow: 
-                0 8px 32px rgba(102, 126, 234, 0.6),
-                0 0 60px rgba(102, 126, 234, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                0 8px 32px rgba(6, 182, 212, 0.35),
+                0 0 50px rgba(14, 165, 233, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }}
     }}
     
@@ -126,19 +158,22 @@ st.markdown(f"""
         width: 100%;
         height: 100%;
         object-fit: contain;
-        filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5));
+        filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.35));
     }}
     
     .brand-title {{
-        font-size: 3.5rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        font-family: 'Space Grotesk', 'Inter', sans-serif;
+        font-size: 3.8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 40%, #14b8a6 70%, #22d3ee 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        letter-spacing: -0.03em;
-        text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        letter-spacing: -0.04em;
         position: relative;
+        text-transform: uppercase;
+        font-style: normal;
+        line-height: 1.1;
     }}
     
     .brand-title::after {{
@@ -147,64 +182,64 @@ st.markdown(f"""
         top: 50%;
         left: 0;
         right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
-        transform: translateY(50px);
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.25), transparent);
+        transform: translateY(55px);
     }}
     
-    /* 사이드바 스타일 - 깊이감 있는 배경 + 테크 느낌 */
+    /* 사이드바 스타일 - 세련된 다크 배경 */
     [data-testid="stSidebar"] {{
-        background: 
-            linear-gradient(180deg, rgba(10, 14, 39, 0.98) 0%, rgba(15, 20, 45, 0.98) 100%),
-            url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30h60M30 0v60' stroke='rgba(102,126,234,0.08)' stroke-width='1'/%3E%3C/svg%3E");
-        border-right: 2px solid rgba(102, 126, 234, 0.4);
-        box-shadow: 4px 0 30px rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(10px);
+        background: linear-gradient(180deg, rgba(15, 15, 30, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+        border-right: 1px solid rgba(6, 182, 212, 0.15);
+        box-shadow: 4px 0 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(20px) saturate(180%);
     }}
     
     /* 사이드바 헤더 스타일 */
     [data-testid="stSidebar"] h2 {{
         font-size: 1.8rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         margin-bottom: 1.5rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+        border-bottom: 1px solid rgba(6, 182, 212, 0.15);
         letter-spacing: -0.01em;
+        font-family: 'Inter', sans-serif;
     }}
     
     [data-testid="stSidebar"] h3 {{
         font-size: 1.4rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #764ba2 0%, #f093fb 100%);
+        font-weight: 600;
+        background: linear-gradient(135deg, #0891b2 0%, #14b8a6 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         margin-top: 2rem;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid rgba(118, 75, 162, 0.3);
+        border-bottom: 1px solid rgba(8, 145, 178, 0.15);
+        font-family: 'Inter', sans-serif;
     }}
     
-    /* 버튼 스타일 - 강화된 Glow 효과 */
+    /* 버튼 스타일 - 세련된 그라데이션 */
     .stButton > button {{
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
         color: white;
         border: none;
-        border-radius: 16px;
+        border-radius: 12px;
         padding: 0.7rem 1.8rem;
         font-weight: 600;
         font-size: 1rem;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 
-            0 4px 15px rgba(102, 126, 234, 0.4),
-            0 0 20px rgba(102, 126, 234, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            0 4px 20px rgba(6, 182, 212, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
         position: relative;
         overflow: hidden;
+        font-family: 'Inter', sans-serif;
     }}
     
     .stButton > button::before {{
@@ -214,17 +249,16 @@ st.markdown(f"""
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
         transition: left 0.5s;
     }}
     
     .stButton > button:hover {{
-        transform: translateY(-3px) scale(1.02);
+        transform: translateY(-2px);
         box-shadow: 
-            0 8px 25px rgba(102, 126, 234, 0.6),
-            0 0 40px rgba(102, 126, 234, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 50%, #f093fb 100%);
+            0 8px 30px rgba(6, 182, 212, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        background: linear-gradient(135deg, #0891b2 0%, #14b8a6 100%);
     }}
     
     .stButton > button:hover::before {{
@@ -232,49 +266,51 @@ st.markdown(f"""
     }}
     
     .stButton > button:active {{
-        transform: translateY(-1px) scale(0.98);
+        transform: translateY(0);
     }}
     
-    /* 텍스트 입력창 스타일 - Underline 스타일 */
+    /* 텍스트 입력창 스타일 - 세련된 Underline */
     .stTextInput > div > div > input {{
-        background-color: rgba(255, 255, 255, 0.03);
+        background-color: rgba(255, 255, 255, 0.04);
         border: none;
-        border-bottom: 2px solid rgba(102, 126, 234, 0.4);
+        border-bottom: 1.5px solid rgba(6, 182, 212, 0.25);
         border-radius: 0;
         color: #ffffff;
         padding: 0.8rem 0.5rem;
         transition: all 0.3s ease;
         font-size: 0.95rem;
+        font-family: 'Inter', sans-serif;
     }}
     
     .stTextInput > div > div > input:focus {{
-        border-bottom-color: #667eea;
-        background-color: rgba(255, 255, 255, 0.05);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        border-bottom-color: #06b6d4;
+        background-color: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 2px 8px rgba(6, 182, 212, 0.15);
         outline: none;
     }}
     
     .stTextInput > div > div > input::placeholder {{
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.35);
     }}
     
-    /* 텍스트 영역 스타일 - 빛나는 테두리 */
+    /* 텍스트 영역 스타일 - 깔끔한 테두리 */
     .stTextArea > div > div > textarea {{
-        background-color: rgba(255, 255, 255, 0.03);
-        border: 2px solid rgba(102, 126, 234, 0.3);
+        background-color: rgba(255, 255, 255, 0.04);
+        border: 1.5px solid rgba(6, 182, 212, 0.2);
         border-radius: 12px;
         color: #ffffff;
         padding: 1rem;
         transition: all 0.3s ease;
         font-size: 0.95rem;
+        font-family: 'Inter', sans-serif;
     }}
     
     .stTextArea > div > div > textarea:focus {{
-        border-color: #667eea;
+        border-color: #06b6d4;
         box-shadow: 
-            0 0 0 3px rgba(102, 126, 234, 0.2),
-            0 0 20px rgba(102, 126, 234, 0.3);
-        background-color: rgba(255, 255, 255, 0.05);
+            0 0 0 2px rgba(6, 182, 212, 0.12),
+            0 4px 16px rgba(6, 182, 212, 0.15);
+        background-color: rgba(255, 255, 255, 0.06);
         outline: none;
     }}
     
@@ -297,17 +333,17 @@ st.markdown(f"""
     }}
     
     [data-testid="stChatMessage"][data-message-author="assistant"] > div:last-child {{
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(15px) saturate(180%);
-        border: 1px solid rgba(102, 126, 234, 0.3);
-        border-left: 4px solid rgba(102, 126, 234, 0.9);
-        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(6, 182, 212, 0.2);
+        border-left: 3px solid rgba(6, 182, 212, 0.7);
+        border-radius: 16px;
         padding: 1.5rem 1.8rem;
         margin-left: 0;
         box-shadow: 
-            0 4px 20px rgba(0, 0, 0, 0.3),
-            0 0 30px rgba(102, 126, 234, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            0 4px 24px rgba(0, 0, 0, 0.3),
+            0 0 20px rgba(6, 182, 212, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
         max-width: 75%;
         flex: 1;
         position: relative;
@@ -320,16 +356,16 @@ st.markdown(f"""
         left: 0;
         right: 0;
         bottom: 0;
-        border-radius: 20px;
+        border-radius: 16px;
         padding: 1px;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(8, 145, 178, 0.15));
         -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
         -webkit-mask-composite: xor;
         mask-composite: exclude;
         pointer-events: none;
     }}
     
-    /* 사용자 메시지 - 오른쪽 정렬, 그라데이션 말풍선 */
+    /* 사용자 메시지 - 오른쪽 정렬, 세련된 그라데이션 */
     [data-testid="stChatMessage"][data-message-author="user"] {{
         display: flex;
         flex-direction: row-reverse;
@@ -343,19 +379,19 @@ st.markdown(f"""
     }}
     
     [data-testid="stChatMessage"][data-message-author="user"] > div:last-child {{
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.35) 0%, rgba(118, 75, 162, 0.35) 100%);
-        border: 1px solid rgba(102, 126, 234, 0.5);
-        border-right: 4px solid #667eea;
-        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(8, 145, 178, 0.2) 100%);
+        border: 1px solid rgba(6, 182, 212, 0.3);
+        border-right: 3px solid rgba(6, 182, 212, 0.7);
+        border-radius: 16px;
         padding: 1.5rem 1.8rem;
         margin-right: 0;
         box-shadow: 
-            0 4px 20px rgba(102, 126, 234, 0.4),
-            0 0 30px rgba(102, 126, 234, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            0 4px 24px rgba(6, 182, 212, 0.2),
+            0 0 20px rgba(6, 182, 212, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
         max-width: 75%;
         flex: 1;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(15px);
     }}
     
     /* 채팅 메시지 텍스트 색상 */
@@ -366,34 +402,35 @@ st.markdown(f"""
         font-size: 1rem;
     }}
     
-    /* 아바타 스타일 - 더 크고 빛나게 */
+    /* 아바타 스타일 - 세련된 그림자 */
     [data-testid="stChatMessage"] img {{
         border-radius: 50%;
         width: 3rem;
         height: 3rem;
         box-shadow: 
-            0 4px 15px rgba(102, 126, 234, 0.4),
-            0 0 20px rgba(102, 126, 234, 0.2);
-        border: 2px solid rgba(102, 126, 234, 0.5);
+            0 4px 20px rgba(6, 182, 212, 0.25),
+            0 0 15px rgba(6, 182, 212, 0.12);
+        border: 2px solid rgba(6, 182, 212, 0.35);
     }}
     
-    /* 채팅 입력창 스타일 - 빛나는 테두리 */
+    /* 채팅 입력창 스타일 - 세련된 테두리 */
     .stChatInput > div > div > textarea {{
         background-color: rgba(255, 255, 255, 0.05) !important;
-        border: 2px solid rgba(102, 126, 234, 0.3) !important;
-        border-radius: 16px !important;
+        border: 1.5px solid rgba(6, 182, 212, 0.2) !important;
+        border-radius: 14px !important;
         color: #ffffff !important;
         padding: 1rem 1.2rem !important;
         font-size: 1rem !important;
         transition: all 0.3s ease !important;
-        backdrop-filter: blur(10px) !important;
+        backdrop-filter: blur(15px) !important;
+        font-family: 'Inter', sans-serif !important;
     }}
     
     .stChatInput > div > div > textarea:focus {{
-        border-color: #667eea !important;
+        border-color: #06b6d4 !important;
         box-shadow: 
-            0 0 0 3px rgba(102, 126, 234, 0.2),
-            0 0 25px rgba(102, 126, 234, 0.4) !important;
+            0 0 0 2px rgba(6, 182, 212, 0.12),
+            0 4px 20px rgba(6, 182, 212, 0.2) !important;
         background-color: rgba(255, 255, 255, 0.08) !important;
         outline: none !important;
     }}
@@ -404,37 +441,37 @@ st.markdown(f"""
     
     /* 성공/에러/경고 메시지 스타일 */
     .stSuccess {{
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-        border-left: 4px solid #10b981;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
+        border-left: 3px solid #10b981;
         border-radius: 12px;
         padding: 1.2rem;
-        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+        backdrop-filter: blur(15px);
     }}
     
     .stError {{
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
-        border-left: 4px solid #ef4444;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%);
+        border-left: 3px solid #ef4444;
         border-radius: 12px;
         padding: 1.2rem;
-        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
+        backdrop-filter: blur(15px);
     }}
     
     .stWarning {{
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%);
-        border-left: 4px solid #f59e0b;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.08) 100%);
+        border-left: 3px solid #f59e0b;
         border-radius: 12px;
         padding: 1.2rem;
-        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+        backdrop-filter: blur(15px);
     }}
     
-    /* 구분선 스타일 - 빛나는 효과 */
+    /* 구분선 스타일 - 미묘한 효과 */
     hr {{
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
+        background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.25), transparent);
         margin: 2rem 0;
     }}
     
@@ -450,9 +487,9 @@ st.markdown(f"""
         color: rgba(255, 255, 255, 0.35) !important;
     }}
     
-    /* 스피너 스타일 - 포인트 컬러 */
+    /* 스피너 스타일 - 세련된 컬러 */
     .stSpinner > div {{
-        border-color: #667eea;
+        border-color: #06b6d4;
         border-top-color: transparent;
     }}
     
@@ -463,18 +500,142 @@ st.markdown(f"""
     }}
     
     ::-webkit-scrollbar-track {{
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.03);
     }}
     
     ::-webkit-scrollbar-thumb {{
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
         border-radius: 4px;
     }}
     
     ::-webkit-scrollbar-thumb:hover {{
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        background: linear-gradient(135deg, #0891b2 0%, #14b8a6 100%);
     }}
 </style>
+<script>
+    // 사이드바 토글 버튼을 명시적으로 보이도록 설정
+    function ensureSidebarToggle() {{
+        // 여러 선택자로 버튼 찾기
+        const selectors = [
+            'button[data-testid="baseButton-header"]',
+            '[data-testid="collapsedControl"]',
+            'button[kind="header"]',
+            '[data-testid="stHeader"] button',
+            'button[aria-label*="sidebar"]',
+            'button[aria-label*="menu"]'
+        ];
+        
+        let sidebarToggle = null;
+        for (const selector of selectors) {{
+            sidebarToggle = document.querySelector(selector);
+            if (sidebarToggle) break;
+        }}
+        
+        // 버튼이 없으면 생성
+        if (!sidebarToggle) {{
+            sidebarToggle = document.createElement('button');
+            sidebarToggle.setAttribute('data-testid', 'custom-sidebar-toggle');
+            sidebarToggle.innerHTML = '☰';
+            sidebarToggle.setAttribute('aria-label', 'Open sidebar');
+            document.body.appendChild(sidebarToggle);
+        }}
+        
+        // 스타일 적용
+        sidebarToggle.style.cssText = `
+            position: fixed !important;
+            top: 1rem !important;
+            left: 1rem !important;
+            z-index: 999 !important;
+            background: rgba(6, 182, 212, 0.15) !important;
+            border: 1.5px solid rgba(6, 182, 212, 0.3) !important;
+            border-radius: 12px !important;
+            padding: 0.6rem 0.8rem !important;
+            color: #06b6d4 !important;
+            font-size: 1.5rem !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15) !important;
+            transition: all 0.3s ease !important;
+            visibility: visible !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            opacity: 1 !important;
+            backdrop-filter: blur(10px) !important;
+        `;
+        
+        // 호버 효과
+        sidebarToggle.onmouseenter = function() {{
+            this.style.background = 'rgba(6, 182, 212, 0.25)';
+            this.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.3)';
+            this.style.transform = 'scale(1.05)';
+            this.style.borderColor = 'rgba(6, 182, 212, 0.5)';
+        }};
+        
+        sidebarToggle.onmouseleave = function() {{
+            this.style.background = 'rgba(6, 182, 212, 0.15)';
+            this.style.boxShadow = '0 4px 20px rgba(6, 182, 212, 0.15)';
+            this.style.transform = 'scale(1)';
+            this.style.borderColor = 'rgba(6, 182, 212, 0.3)';
+        }};
+        
+        // 클릭 이벤트 - Streamlit 사이드바 토글
+        sidebarToggle.onclick = function(e) {{
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Streamlit의 사이드바 토글 이벤트 발생
+            const sidebar = document.querySelector('[data-testid="stSidebar"]');
+            if (sidebar) {{
+                // Streamlit의 내부 함수 호출 시도
+                if (window.parent && window.parent.postMessage) {{
+                    window.parent.postMessage({{type: 'streamlit:setFrameHeight'}}, '*');
+                }}
+                
+                // 직접 토글
+                const isCollapsed = sidebar.classList.contains('css-1d391kg') || 
+                                   sidebar.style.display === 'none' ||
+                                   sidebar.offsetWidth === 0;
+                
+                if (isCollapsed) {{
+                    sidebar.style.display = 'block';
+                    sidebar.style.visibility = 'visible';
+                }} else {{
+                    // 사이드바를 닫지 않고 유지 (사용자가 X 버튼으로 닫을 수 있음)
+                }}
+            }}
+            
+            // Streamlit의 기본 토글 동작 시도
+            const clickEvent = new MouseEvent('click', {{
+                bubbles: true,
+                cancelable: true,
+                view: window
+            }});
+            
+            // 원본 버튼이 있으면 클릭
+            const originalBtn = document.querySelector('button[data-testid="baseButton-header"]') ||
+                               document.querySelector('[data-testid="collapsedControl"]');
+            if (originalBtn) {{
+                originalBtn.dispatchEvent(clickEvent);
+            }}
+        }};
+    }}
+    
+    // 즉시 실행
+    ensureSidebarToggle();
+    
+    // DOM 로드 후 실행
+    if (document.readyState === 'loading') {{
+        document.addEventListener('DOMContentLoaded', ensureSidebarToggle);
+    }}
+    
+    // Streamlit이 DOM을 업데이트할 때마다 실행 (debounce)
+    let timeout;
+    const observer = new MutationObserver(function() {{
+        clearTimeout(timeout);
+        timeout = setTimeout(ensureSidebarToggle, 100);
+    }});
+    observer.observe(document.body, {{ childList: true, subtree: true }});
+</script>
 """, unsafe_allow_html=True)
 
 # 브랜드 헤더 - 로고와 타이틀
@@ -587,13 +748,13 @@ with st.sidebar:
     st.markdown("### 🔑 설정")
     if secret_api_key: 
         api_key = secret_api_key
-        st.markdown('<div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); backdrop-filter: blur(10px);">✅ <strong>OpenAI 자동 연결</strong></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%); border-left: 3px solid #10b981; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15); backdrop-filter: blur(15px);">✅ <strong>OpenAI 자동 연결</strong></div>', unsafe_allow_html=True)
     else: 
         api_key = st.text_input("🔐 OpenAI Key", type="password", placeholder="sk-...")
 
     if secret_notion_key: 
         notion_key = secret_notion_key
-        st.markdown('<div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); backdrop-filter: blur(10px);">✅ <strong>Notion 자동 연결</strong></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%); border-left: 3px solid #10b981; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15); backdrop-filter: blur(15px);">✅ <strong>Notion 자동 연결</strong></div>', unsafe_allow_html=True)
     else: 
         notion_key = st.text_input("🔐 Notion Key", type="password", placeholder="secret_...")
 
