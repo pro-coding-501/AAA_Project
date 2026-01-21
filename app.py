@@ -260,6 +260,79 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
+# --- 비밀번호 인증 체크 ---
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+# 비밀번호 가져오기
+try:
+    app_password = st.secrets["APP_PASSWORD"]
+except:
+    app_password = None
+
+# 인증되지 않은 경우 잠금 화면 표시
+if not st.session_state.authenticated:
+    # 잠금 화면 CSS 추가
+    st.markdown("""
+    <style>
+        .lock-screen-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            padding: 2rem;
+        }
+        .lock-message {
+            color: #F5F5F7;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            text-align: center;
+            letter-spacing: -0.01em;
+        }
+        .lock-input-container {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 1rem;
+        }
+        .lock-button-container {
+            width: 100%;
+            max-width: 400px;
+        }
+        .error-message {
+            color: #FF6B6B;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # 잠금 화면 UI
+    st.markdown('<div class="lock-screen-container">', unsafe_allow_html=True)
+    st.markdown('<div class="lock-message">🔒 접근 권한이 없습니다. 비밀번호를 입력하세요.</div>', unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        password_input = st.text_input("비밀번호", type="password", placeholder="비밀번호를 입력하세요", label_visibility="collapsed", key="lock_password")
+        if st.button("확인", use_container_width=True, key="lock_submit"):
+            if app_password and password_input == app_password:
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.session_state.password_error = True
+        
+        if st.session_state.get("password_error", False):
+            st.markdown('<div class="error-message">❌ 비밀번호가 일치하지 않습니다.</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # 잠금 화면에서는 여기서 종료
+    st.stop()
+
+# --- 인증 성공 후 메인 화면 ---
+
 # 로고 헤더 - 상단 중앙 배치
 if logo_base64:
     st.markdown(f"""
