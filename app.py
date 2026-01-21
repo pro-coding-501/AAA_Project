@@ -17,480 +17,226 @@ def get_logo_base64():
 
 logo_base64 = get_logo_base64()
 
-# 커스텀 CSS - Dark Tech 스타일 (완전 재설계)
+# Apple-style Minimalist Dark 테마 CSS
 st.markdown(f"""
 <style>
-    /* 웹폰트 로드 - AI 앱 스타일 폰트 */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-    
-    /* Streamlit 기본 푸터만 숨기기 */
+    /* Streamlit 기본 푸터 숨기기 */
     footer {{visibility: hidden;}}
     
-    /* 헤더의 텍스트는 숨기되, 버튼은 유지 */
-    header .css-1d391kg {{visibility: hidden;}}
-    header [data-testid="stHeader"] > div:first-child {{visibility: hidden;}}
-    
-    /* 사이드바 토글 버튼 - 항상 보이도록 강제 */
-    button[data-testid="baseButton-header"],
-    [data-testid="collapsedControl"],
-    button[kind="header"],
-    [data-testid="stHeader"] button {{
-        visibility: visible !important;
-        display: flex !important;
-        opacity: 1 !important;
-        z-index: 999 !important;
-        position: fixed !important;
-        top: 1rem !important;
-        left: 1rem !important;
-        background: rgba(6, 182, 212, 0.15) !important;
-        border: 1.5px solid rgba(6, 182, 212, 0.3) !important;
-        border-radius: 12px !important;
-        padding: 0.6rem 0.8rem !important;
-        box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15) !important;
-        transition: all 0.3s ease !important;
-        cursor: pointer !important;
-        backdrop-filter: blur(10px) !important;
-    }}
-    
-    button[data-testid="baseButton-header"]:hover,
-    [data-testid="collapsedControl"]:hover,
-    button[kind="header"]:hover {{
-        background: rgba(6, 182, 212, 0.25) !important;
-        box-shadow: 0 0 30px rgba(6, 182, 212, 0.3) !important;
-        transform: scale(1.05) !important;
-        border-color: rgba(6, 182, 212, 0.5) !important;
-    }}
-    
-    /* 햄버거 아이콘 색상 */
-    button[data-testid="baseButton-header"] svg,
-    [data-testid="collapsedControl"] svg,
-    button[kind="header"] svg {{
-        color: #06b6d4 !important;
-        stroke: #06b6d4 !important;
-        fill: #06b6d4 !important;
-        width: 1.5rem !important;
-        height: 1.5rem !important;
-    }}
-    
-    /* 전체 배경 - 세련된 다크모드 그라데이션 */
+    /* 전체 배경 - Pure Black */
     .stApp {{
-        background: 
-            /* 미묘한 그라데이션 레이어 */
-            radial-gradient(ellipse at top left, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
-            radial-gradient(ellipse at top right, rgba(14, 165, 233, 0.05) 0%, transparent 50%),
-            radial-gradient(ellipse at bottom center, rgba(20, 184, 166, 0.04) 0%, transparent 60%),
-            /* 메인 다크 그라데이션 */
-            linear-gradient(180deg, #0f0f1e 0%, #1a1a2e 30%, #1e1e3e 60%, #0f0f1e 100%);
-        background-attachment: fixed;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000000;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
         min-height: 100vh;
+        letter-spacing: -0.01em;
     }}
     
-    /* 메인 컨테이너 스타일 */
+    /* 메인 컨테이너 */
     .main .block-container {{
         padding-top: 2rem;
         padding-bottom: 2rem;
         max-width: 1200px;
     }}
     
-    /* 로고 및 타이틀 컨테이너 */
-    .brand-header {{
+    /* 로고 컨테이너 - 상단 중앙 */
+    .logo-header {{
         display: flex;
-        align-items: center;
         justify-content: center;
-        gap: 1.5rem;
+        align-items: center;
         margin-bottom: 3rem;
-        margin-top: 1rem;
-        padding: 2rem 0;
-        position: relative;
-    }}
-    
-    .brand-header::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 400px;
-        height: 200px;
-        background: radial-gradient(ellipse, rgba(6, 182, 212, 0.12) 0%, transparent 70%);
-        filter: blur(60px);
-        z-index: -1;
-        animation: pulse 4s ease-in-out infinite;
-    }}
-    
-    @keyframes pulse {{
-        0%, 100% {{ opacity: 0.5; }}
-        50% {{ opacity: 0.8; }}
+        margin-top: 2rem;
+        padding: 1rem 0;
     }}
     
     .logo-container {{
-        width: 80px;
-        height: 80px;
-        border-radius: 18px;
-        overflow: hidden;
-        box-shadow: 
-            0 8px 32px rgba(6, 182, 212, 0.25),
-            0 0 30px rgba(6, 182, 212, 0.15),
-            inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        border: 2px solid rgba(6, 182, 212, 0.35);
-        position: relative;
-        animation: glow 3s ease-in-out infinite alternate;
-        backdrop-filter: blur(10px);
-    }}
-    
-    @keyframes glow {{
-        from {{
-            box-shadow: 
-                0 8px 32px rgba(6, 182, 212, 0.25),
-                0 0 30px rgba(6, 182, 212, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        }}
-        to {{
-            box-shadow: 
-                0 8px 32px rgba(6, 182, 212, 0.35),
-                0 0 50px rgba(14, 165, 233, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }}
+        width: 120px;
+        height: 120px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }}
     
     .logo-container img {{
         width: 100%;
         height: 100%;
         object-fit: contain;
-        filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.35));
     }}
     
-    .brand-title {{
-        font-family: 'Space Grotesk', 'Inter', sans-serif;
-        font-size: 3.8rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 40%, #14b8a6 70%, #22d3ee 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        letter-spacing: -0.04em;
-        position: relative;
-        text-transform: uppercase;
-        font-style: normal;
-        line-height: 1.1;
-    }}
-    
-    .brand-title::after {{
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.25), transparent);
-        transform: translateY(55px);
-    }}
-    
-    /* 사이드바 스타일 - 세련된 다크 배경 */
+    /* 사이드바 스타일 - Apple Gray */
     [data-testid="stSidebar"] {{
-        background: linear-gradient(180deg, rgba(15, 15, 30, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
-        border-right: 1px solid rgba(6, 182, 212, 0.15);
-        box-shadow: 4px 0 40px rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(20px) saturate(180%);
+        background: #1c1c1e;
     }}
     
-    /* 사이드바 헤더 스타일 */
-    [data-testid="stSidebar"] h2 {{
-        font-size: 1.8rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid rgba(6, 182, 212, 0.15);
+    /* 사이드바 텍스트 색상 */
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {{
+        color: #F5F5F7;
+        font-weight: 600;
         letter-spacing: -0.01em;
-        font-family: 'Inter', sans-serif;
+    }}
+    
+    [data-testid="stSidebar"] h2 {{
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
     }}
     
     [data-testid="stSidebar"] h3 {{
-        font-size: 1.4rem;
-        font-weight: 600;
-        background: linear-gradient(135deg, #0891b2 0%, #14b8a6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        font-size: 1.2rem;
         margin-top: 2rem;
         margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid rgba(8, 145, 178, 0.15);
-        font-family: 'Inter', sans-serif;
     }}
     
-    /* 버튼 스타일 - 세련된 그라데이션 */
+    /* 버튼 스타일 - 둥근 사각형, 화이트 배경 */
     .stButton > button {{
-        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-        color: white;
+        background: #FFFFFF;
+        color: #000000;
         border: none;
-        border-radius: 12px;
-        padding: 0.7rem 1.8rem;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 
-            0 4px 20px rgba(6, 182, 212, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        position: relative;
-        overflow: hidden;
-        font-family: 'Inter', sans-serif;
-    }}
-    
-    .stButton > button::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-        transition: left 0.5s;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        letter-spacing: -0.01em;
     }}
     
     .stButton > button:hover {{
-        transform: translateY(-2px);
-        box-shadow: 
-            0 8px 30px rgba(6, 182, 212, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        background: linear-gradient(135deg, #0891b2 0%, #14b8a6 100%);
-    }}
-    
-    .stButton > button:hover::before {{
-        left: 100%;
+        background: #F5F5F7;
+        transform: scale(1.02);
     }}
     
     .stButton > button:active {{
-        transform: translateY(0);
+        transform: scale(0.98);
     }}
     
-    /* 텍스트 입력창 스타일 - 세련된 Underline */
+    /* 텍스트 입력창 - 테두리 없음, 짙은 회색 배경 */
     .stTextInput > div > div > input {{
-        background-color: rgba(255, 255, 255, 0.04);
+        background-color: #2c2c2e;
         border: none;
-        border-bottom: 1.5px solid rgba(6, 182, 212, 0.25);
-        border-radius: 0;
-        color: #ffffff;
-        padding: 0.8rem 0.5rem;
-        transition: all 0.3s ease;
+        border-radius: 10px;
+        color: #F5F5F7;
+        padding: 0.75rem 1rem;
         font-size: 0.95rem;
-        font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease;
+        letter-spacing: -0.01em;
     }}
     
     .stTextInput > div > div > input:focus {{
-        border-bottom-color: #06b6d4;
-        background-color: rgba(255, 255, 255, 0.06);
-        box-shadow: 0 2px 8px rgba(6, 182, 212, 0.15);
+        background-color: #3a3a3c;
         outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
     }}
     
     .stTextInput > div > div > input::placeholder {{
-        color: rgba(255, 255, 255, 0.35);
+        color: #86868B;
     }}
     
-    /* 텍스트 영역 스타일 - 깔끔한 테두리 */
+    /* 텍스트 영역 - 테두리 없음, 짙은 회색 배경 */
     .stTextArea > div > div > textarea {{
-        background-color: rgba(255, 255, 255, 0.04);
-        border: 1.5px solid rgba(6, 182, 212, 0.2);
-        border-radius: 12px;
-        color: #ffffff;
-        padding: 1rem;
-        transition: all 0.3s ease;
+        background-color: #2c2c2e;
+        border: none;
+        border-radius: 10px;
+        color: #F5F5F7;
+        padding: 0.75rem 1rem;
         font-size: 0.95rem;
-        font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease;
+        letter-spacing: -0.01em;
     }}
     
     .stTextArea > div > div > textarea:focus {{
-        border-color: #06b6d4;
-        box-shadow: 
-            0 0 0 2px rgba(6, 182, 212, 0.12),
-            0 4px 16px rgba(6, 182, 212, 0.15);
-        background-color: rgba(255, 255, 255, 0.06);
+        background-color: #3a3a3c;
         outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
     }}
     
-    /* 채팅 메시지 컨테이너 - 간격 넓히기 */
+    .stTextArea > div > div > textarea::placeholder {{
+        color: #86868B;
+    }}
+    
+    /* 채팅 메시지 컨테이너 */
     [data-testid="stChatMessage"] {{
         padding: 0;
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
     }}
     
-    /* AI 메시지 - 왼쪽 정렬, 유리 질감 (Glassmorphism) */
-    [data-testid="stChatMessage"][data-message-author="assistant"] {{
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-    }}
-    
-    [data-testid="stChatMessage"][data-message-author="assistant"] > div:first-child {{
-        margin-right: 1rem;
-        flex-shrink: 0;
-    }}
-    
+    /* AI 메시지 - 투명 배경 */
     [data-testid="stChatMessage"][data-message-author="assistant"] > div:last-child {{
-        background: rgba(255, 255, 255, 0.06);
-        backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid rgba(6, 182, 212, 0.2);
-        border-left: 3px solid rgba(6, 182, 212, 0.7);
-        border-radius: 16px;
-        padding: 1.5rem 1.8rem;
-        margin-left: 0;
-        box-shadow: 
-            0 4px 24px rgba(0, 0, 0, 0.3),
-            0 0 20px rgba(6, 182, 212, 0.12),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        max-width: 75%;
-        flex: 1;
-        position: relative;
+        background: transparent;
+        border: none;
+        padding: 1rem 0;
+        color: #F5F5F7;
     }}
     
-    [data-testid="stChatMessage"][data-message-author="assistant"] > div:last-child::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 16px;
-        padding: 1px;
-        background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(8, 145, 178, 0.15));
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-    }}
-    
-    /* 사용자 메시지 - 오른쪽 정렬, 세련된 그라데이션 */
-    [data-testid="stChatMessage"][data-message-author="user"] {{
-        display: flex;
-        flex-direction: row-reverse;
-        align-items: flex-start;
-        justify-content: flex-end;
-    }}
-    
-    [data-testid="stChatMessage"][data-message-author="user"] > div:first-child {{
-        margin-left: 1rem;
-        flex-shrink: 0;
-    }}
-    
+    /* 사용자 메시지 - 짙은 회색 배경 */
     [data-testid="stChatMessage"][data-message-author="user"] > div:last-child {{
-        background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(8, 145, 178, 0.2) 100%);
-        border: 1px solid rgba(6, 182, 212, 0.3);
-        border-right: 3px solid rgba(6, 182, 212, 0.7);
-        border-radius: 16px;
-        padding: 1.5rem 1.8rem;
-        margin-right: 0;
-        box-shadow: 
-            0 4px 24px rgba(6, 182, 212, 0.2),
-            0 0 20px rgba(6, 182, 212, 0.12),
-            inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        max-width: 75%;
-        flex: 1;
-        backdrop-filter: blur(15px);
+        background: #3a3a3c;
+        border: none;
+        border-radius: 10px;
+        padding: 1rem 1.2rem;
+        color: #F5F5F7;
     }}
     
     /* 채팅 메시지 텍스트 색상 */
     [data-testid="stChatMessage"] p {{
-        color: rgba(255, 255, 255, 0.95);
-        line-height: 1.8;
+        color: #F5F5F7;
+        line-height: 1.6;
         margin: 0;
-        font-size: 1rem;
+        font-size: 0.95rem;
+        letter-spacing: -0.01em;
     }}
     
-    /* 아바타 스타일 - 세련된 그림자 */
-    [data-testid="stChatMessage"] img {{
-        border-radius: 50%;
-        width: 3rem;
-        height: 3rem;
-        box-shadow: 
-            0 4px 20px rgba(6, 182, 212, 0.25),
-            0 0 15px rgba(6, 182, 212, 0.12);
-        border: 2px solid rgba(6, 182, 212, 0.35);
-    }}
-    
-    /* 채팅 입력창 스타일 - 세련된 테두리 */
+    /* 채팅 입력창 - 테두리 없음, 짙은 회색 배경 */
     .stChatInput > div > div > textarea {{
-        background-color: rgba(255, 255, 255, 0.05) !important;
-        border: 1.5px solid rgba(6, 182, 212, 0.2) !important;
-        border-radius: 14px !important;
-        color: #ffffff !important;
+        background-color: #2c2c2e !important;
+        border: none !important;
+        border-radius: 10px !important;
+        color: #F5F5F7 !important;
         padding: 1rem 1.2rem !important;
-        font-size: 1rem !important;
-        transition: all 0.3s ease !important;
-        backdrop-filter: blur(15px) !important;
-        font-family: 'Inter', sans-serif !important;
+        font-size: 0.95rem !important;
+        transition: all 0.2s ease !important;
+        letter-spacing: -0.01em !important;
     }}
     
     .stChatInput > div > div > textarea:focus {{
-        border-color: #06b6d4 !important;
-        box-shadow: 
-            0 0 0 2px rgba(6, 182, 212, 0.12),
-            0 4px 20px rgba(6, 182, 212, 0.2) !important;
-        background-color: rgba(255, 255, 255, 0.08) !important;
+        background-color: #3a3a3c !important;
         outline: none !important;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
     }}
     
     .stChatInput > div > div > textarea::placeholder {{
-        color: rgba(255, 255, 255, 0.4) !important;
-    }}
-    
-    /* 성공/에러/경고 메시지 스타일 */
-    .stSuccess {{
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
-        border-left: 3px solid #10b981;
-        border-radius: 12px;
-        padding: 1.2rem;
-        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
-        backdrop-filter: blur(15px);
-    }}
-    
-    .stError {{
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%);
-        border-left: 3px solid #ef4444;
-        border-radius: 12px;
-        padding: 1.2rem;
-        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
-        backdrop-filter: blur(15px);
-    }}
-    
-    .stWarning {{
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.08) 100%);
-        border-left: 3px solid #f59e0b;
-        border-radius: 12px;
-        padding: 1.2rem;
-        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
-        backdrop-filter: blur(15px);
-    }}
-    
-    /* 구분선 스타일 - 미묘한 효과 */
-    hr {{
-        border: none;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.25), transparent);
-        margin: 2rem 0;
+        color: #86868B !important;
     }}
     
     /* 라벨 스타일 */
     label {{
-        color: rgba(255, 255, 255, 0.85) !important;
-        font-weight: 600;
-        font-size: 0.95rem;
+        color: #F5F5F7 !important;
+        font-weight: 500;
+        font-size: 0.9rem;
+        letter-spacing: -0.01em;
     }}
     
-    /* 플레이스홀더 스타일 */
-    input::placeholder, textarea::placeholder {{
-        color: rgba(255, 255, 255, 0.35) !important;
+    /* 성공/에러 메시지 - 미니멀 스타일 */
+    .stSuccess {{
+        background: #2c2c2e;
+        border: none;
+        border-radius: 10px;
+        padding: 1rem;
+        color: #F5F5F7;
     }}
     
-    /* 스피너 스타일 - 세련된 컬러 */
-    .stSpinner > div {{
-        border-color: #06b6d4;
-        border-top-color: transparent;
+    .stError {{
+        background: #2c2c2e;
+        border: none;
+        border-radius: 10px;
+        padding: 1rem;
+        color: #F5F5F7;
+    }}
+    
+    /* 구분선 */
+    hr {{
+        border: none;
+        height: 1px;
+        background: #2c2c2e;
+        margin: 2rem 0;
     }}
     
     /* 스크롤바 스타일 */
@@ -500,158 +246,27 @@ st.markdown(f"""
     }}
     
     ::-webkit-scrollbar-track {{
-        background: rgba(255, 255, 255, 0.03);
+        background: #000000;
     }}
     
     ::-webkit-scrollbar-thumb {{
-        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        background: #2c2c2e;
         border-radius: 4px;
     }}
     
     ::-webkit-scrollbar-thumb:hover {{
-        background: linear-gradient(135deg, #0891b2 0%, #14b8a6 100%);
+        background: #3a3a3c;
     }}
 </style>
-<script>
-    // 사이드바 토글 버튼을 명시적으로 보이도록 설정
-    function ensureSidebarToggle() {{
-        // 여러 선택자로 버튼 찾기
-        const selectors = [
-            'button[data-testid="baseButton-header"]',
-            '[data-testid="collapsedControl"]',
-            'button[kind="header"]',
-            '[data-testid="stHeader"] button',
-            'button[aria-label*="sidebar"]',
-            'button[aria-label*="menu"]'
-        ];
-        
-        let sidebarToggle = null;
-        for (const selector of selectors) {{
-            sidebarToggle = document.querySelector(selector);
-            if (sidebarToggle) break;
-        }}
-        
-        // 버튼이 없으면 생성
-        if (!sidebarToggle) {{
-            sidebarToggle = document.createElement('button');
-            sidebarToggle.setAttribute('data-testid', 'custom-sidebar-toggle');
-            sidebarToggle.innerHTML = '☰';
-            sidebarToggle.setAttribute('aria-label', 'Open sidebar');
-            document.body.appendChild(sidebarToggle);
-        }}
-        
-        // 스타일 적용
-        sidebarToggle.style.cssText = `
-            position: fixed !important;
-            top: 1rem !important;
-            left: 1rem !important;
-            z-index: 999 !important;
-            background: rgba(6, 182, 212, 0.15) !important;
-            border: 1.5px solid rgba(6, 182, 212, 0.3) !important;
-            border-radius: 12px !important;
-            padding: 0.6rem 0.8rem !important;
-            color: #06b6d4 !important;
-            font-size: 1.5rem !important;
-            cursor: pointer !important;
-            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15) !important;
-            transition: all 0.3s ease !important;
-            visibility: visible !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            opacity: 1 !important;
-            backdrop-filter: blur(10px) !important;
-        `;
-        
-        // 호버 효과
-        sidebarToggle.onmouseenter = function() {{
-            this.style.background = 'rgba(6, 182, 212, 0.25)';
-            this.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.3)';
-            this.style.transform = 'scale(1.05)';
-            this.style.borderColor = 'rgba(6, 182, 212, 0.5)';
-        }};
-        
-        sidebarToggle.onmouseleave = function() {{
-            this.style.background = 'rgba(6, 182, 212, 0.15)';
-            this.style.boxShadow = '0 4px 20px rgba(6, 182, 212, 0.15)';
-            this.style.transform = 'scale(1)';
-            this.style.borderColor = 'rgba(6, 182, 212, 0.3)';
-        }};
-        
-        // 클릭 이벤트 - Streamlit 사이드바 토글
-        sidebarToggle.onclick = function(e) {{
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Streamlit의 사이드바 토글 이벤트 발생
-            const sidebar = document.querySelector('[data-testid="stSidebar"]');
-            if (sidebar) {{
-                // Streamlit의 내부 함수 호출 시도
-                if (window.parent && window.parent.postMessage) {{
-                    window.parent.postMessage({{type: 'streamlit:setFrameHeight'}}, '*');
-                }}
-                
-                // 직접 토글
-                const isCollapsed = sidebar.classList.contains('css-1d391kg') || 
-                                   sidebar.style.display === 'none' ||
-                                   sidebar.offsetWidth === 0;
-                
-                if (isCollapsed) {{
-                    sidebar.style.display = 'block';
-                    sidebar.style.visibility = 'visible';
-                }} else {{
-                    // 사이드바를 닫지 않고 유지 (사용자가 X 버튼으로 닫을 수 있음)
-                }}
-            }}
-            
-            // Streamlit의 기본 토글 동작 시도
-            const clickEvent = new MouseEvent('click', {{
-                bubbles: true,
-                cancelable: true,
-                view: window
-            }});
-            
-            // 원본 버튼이 있으면 클릭
-            const originalBtn = document.querySelector('button[data-testid="baseButton-header"]') ||
-                               document.querySelector('[data-testid="collapsedControl"]');
-            if (originalBtn) {{
-                originalBtn.dispatchEvent(clickEvent);
-            }}
-        }};
-    }}
-    
-    // 즉시 실행
-    ensureSidebarToggle();
-    
-    // DOM 로드 후 실행
-    if (document.readyState === 'loading') {{
-        document.addEventListener('DOMContentLoaded', ensureSidebarToggle);
-    }}
-    
-    // Streamlit이 DOM을 업데이트할 때마다 실행 (debounce)
-    let timeout;
-    const observer = new MutationObserver(function() {{
-        clearTimeout(timeout);
-        timeout = setTimeout(ensureSidebarToggle, 100);
-    }});
-    observer.observe(document.body, {{ childList: true, subtree: true }});
-</script>
 """, unsafe_allow_html=True)
 
-# 브랜드 헤더 - 로고와 타이틀
+# 로고 헤더 - 상단 중앙 배치
 if logo_base64:
     st.markdown(f"""
-    <div class="brand-header">
+    <div class="logo-header">
         <div class="logo-container">
             <img src="data:image/png;base64,{logo_base64}" alt="AlphA AI Logo">
         </div>
-        <div class="brand-title">AAA: AlphA AI</div>
-    </div>
-    """, unsafe_allow_html=True)
-else:
-    st.markdown("""
-    <div class="brand-header">
-        <div class="brand-title">🤖 AAA: AlphA AI</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -748,13 +363,13 @@ with st.sidebar:
     st.markdown("### 🔑 설정")
     if secret_api_key: 
         api_key = secret_api_key
-        st.markdown('<div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%); border-left: 3px solid #10b981; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15); backdrop-filter: blur(15px);">✅ <strong>OpenAI 자동 연결</strong></div>', unsafe_allow_html=True)
+        st.success("✅ OpenAI 자동 연결")
     else: 
         api_key = st.text_input("🔐 OpenAI Key", type="password", placeholder="sk-...")
 
     if secret_notion_key: 
         notion_key = secret_notion_key
-        st.markdown('<div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%); border-left: 3px solid #10b981; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15); backdrop-filter: blur(15px);">✅ <strong>Notion 자동 연결</strong></div>', unsafe_allow_html=True)
+        st.success("✅ Notion 자동 연결")
     else: 
         notion_key = st.text_input("🔐 Notion Key", type="password", placeholder="secret_...")
 
