@@ -1,80 +1,11 @@
 import streamlit as st
+from openai import OpenAI
 import requests
 import re
-import json
 
 # 1. 페이지 설정
 st.set_page_config(page_title="AAA: AlphA AI", page_icon="🤖")
 st.title("🤖 AAA: AlphA AI")
-
-# --- OpenAI API 직접 호출 함수 (requests 사용) ---
-def call_openai_stream(api_key, messages):
-    """
-    requests 라이브러리만 사용하여 OpenAI Chat Completion API를 직접 호출합니다.
-    스트리밍 응답을 처리하여 텍스트를 실시간으로 반환합니다.
-    """
-    url = "https://api.openai.com/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    
-    payload = {
-        "model": "gpt-4o-mini",
-        "messages": messages,
-        "stream": True
-    }
-    
-    try:
-        # 스트리밍 요청
-        response = requests.post(url, headers=headers, json=payload, stream=True, timeout=30)
-        
-        # HTTP 에러 체크
-        if response.status_code != 200:
-            error_detail = response.text
-            try:
-                error_json = response.json()
-                error_message = error_json.get("error", {}).get("message", error_detail)
-            except:
-                error_message = f"HTTP {response.status_code}: {error_detail}"
-            raise Exception(f"OpenAI API 호출 실패: {error_message}")
-        
-        # SSE 스트리밍 응답 파싱
-        full_text = ""
-        for line in response.iter_lines():
-            if line:
-                line_text = line.decode('utf-8')
-                
-                # SSE 형식: "data: {...}" 또는 "data: [DONE]"
-                if line_text.startswith("data: "):
-                    data_str = line_text[6:]  # "data: " 제거
-                    
-                    if data_str == "[DONE]":
-                        break
-                    
-                    try:
-                        data = json.loads(data_str)
-                        choices = data.get("choices", [])
-                        if choices:
-                            delta = choices[0].get("delta", {})
-                            content = delta.get("content", "")
-                            if content:
-                                full_text += content
-                                yield content
-                    except json.JSONDecodeError as e:
-                        # JSON 파싱 에러는 무시하고 계속 진행
-                        continue
-        
-        return full_text
-        
-    except requests.exceptions.Timeout:
-        raise Exception("OpenAI API 연결 시간 초과: 서버 응답이 30초를 초과했습니다.")
-    except requests.exceptions.ConnectionError as e:
-        raise Exception(f"OpenAI API 연결 실패: 네트워크 연결을 확인해주세요. ({str(e)})")
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"OpenAI API 요청 실패: {str(e)}")
-    except Exception as e:
-        raise Exception(f"예상치 못한 에러: {str(e)}")
 
 # --- 도구 함수 (노션 데이터 읽기) ---
 def extract_page_id(url):
@@ -194,6 +125,9 @@ if prompt := st.chat_input("질문을 입력하세요"):
 
     if api_key:
         try:
+            # [핵심] 클라우드 전용 순정 클라이언트 (옵션 없음)
+            client = OpenAI(api_key=api_key)
+            
             system_prompt = f"""너는 AlphA Inc.의 AI 비서 AAA야. 
             아래 [노션 데이터]를 참고해서 질문에 답해줘.
             
@@ -201,12 +135,13 @@ if prompt := st.chat_input("질문을 입력하세요"):
             {st.session_state.notion_context}
             """
 
-            messages = [{"role": "system", "content": system_prompt}] + st.session_state.messages
-            
             with st.chat_message("assistant"):
-                # requests를 사용한 직접 호출 (스트리밍)
-                stream_generator = call_openai_stream(api_key, messages)
-                response = st.write_stream(stream_generator)
+                stream = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "system", "content": system_prompt}] + st.session_state.messages,
+                    stream=True,
+                )
+                response = st.write_stream(stream)
             
             st.session_state.messages.append({"role": "assistant", "content": response})
         
