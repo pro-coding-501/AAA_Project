@@ -9,7 +9,7 @@ st.set_page_config(
     page_title="AlphA AI • AAA", 
     page_icon=None, 
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # 로고 이미지 인코딩 함수
@@ -22,32 +22,21 @@ def get_logo_base64():
 
 logo_base64 = get_logo_base64()
 
-# Midnight Silver & Glass 테마 CSS
+# Premium Dark Theme CSS
 st.markdown(f"""
 <style>
     /* ============================================ */
-    /* Midnight Silver & Glass Theme */
+    /* Premium AI Chat Interface Theme */
     /* ============================================ */
     
     /* 폰트 임포트 */
-    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     @import url('https://rsms.me/inter/inter.css');
     
     /* Streamlit 기본 요소 숨기기 */
     footer {{visibility: hidden;}}
+    #MainMenu {{visibility: hidden;}}
     
-    /* 헤더는 보이게 하되 메뉴만 숨기기 */
-    header {{visibility: visible;}}
-    header .stAppToolbar {{
-        visibility: visible;
-    }}
-    
-    /* 메뉴는 숨기되 사이드바 토글 버튼은 보이게 */
-    #MainMenu {{
-        visibility: hidden;
-    }}
-    
-    /* 사이드바 토글 버튼 - 모든 가능한 선택자 */
+    /* 사이드바 토글 버튼 스타일 */
     button[kind="header"],
     button[title="View sidebar"],
     button[title="Close sidebar"],
@@ -58,81 +47,123 @@ st.markdown(f"""
         visibility: visible !important;
         display: block !important;
         opacity: 1 !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 8px !important;
+        transition: all 0.2s ease !important;
     }}
     
-    /* 사이드바가 닫혔을 때도 토글 버튼 보이게 */
-    section[data-testid="stSidebar"] ~ div button[kind="header"],
-    .stApp header button {{
-        visibility: visible !important;
-        display: block !important;
+    button[kind="header"]:hover,
+    [data-testid="stSidebarCollapseButton"] button:hover {{
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
     }}
     
     /* ============================================ */
-    /* 전체 배경 - Midnight Deep Gray */
+    /* 전체 배경 - Deep Near-Black */
     /* ============================================ */
     .stApp {{
-        background: linear-gradient(180deg, #0a0a0a 0%, #121212 100%);
-        font-family: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+        background: linear-gradient(180deg, #050505 0%, #0a0a0a 50%, #0f0f0f 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
         min-height: 100vh;
-        letter-spacing: -0.02em;
-        color: #E8E8E8;
-    }}
-    
-    /* 메인 컨테이너 */
-    .main .block-container {{
-        padding-top: 1.5rem;
-        padding-bottom: 8rem;
-        max-width: 1400px;
-        margin: 0 auto;
+        letter-spacing: -0.01em;
+        color: #E5E5E5;
     }}
     
     /* ============================================ */
-    /* 로고 헤더 - Glass Effect */
+    /* 상단 고정 헤더 */
     /* ============================================ */
-    .logo-header {{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 2.5rem;
-        margin-top: 1rem;
-        padding: 1.5rem;
-        background: rgba(255, 255, 255, 0.02);
+    .app-header {{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        background: rgba(10, 10, 10, 0.8);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 24px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }}
-    
-    .logo-container {{
-        width: 100px;
-        height: 100px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         display: flex;
-        justify-content: center;
         align-items: center;
-        position: relative;
+        justify-content: center;
+        z-index: 1000;
+        padding: 0 2rem;
     }}
     
-    .logo-container img {{
+    .app-header-content {{
+        max-width: 1200px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }}
+    
+    .app-header-logo {{
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }}
+    
+    .app-header-logo img {{
         width: 100%;
         height: 100%;
         object-fit: contain;
-        filter: drop-shadow(0 4px 16px rgba(255, 255, 255, 0.1));
+        filter: brightness(1.1);
+    }}
+    
+    .app-header-title {{
+        color: #FFFFFF;
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }}
+    
+    .app-header-title .separator {{
+        color: rgba(255, 255, 255, 0.3);
+        font-weight: 300;
+    }}
+    
+    /* 메인 컨테이너 - 중앙 정렬, 최대 너비 65-70% */
+    .main .block-container {{
+        padding-top: 5rem;
+        padding-bottom: 10rem;
+        max-width: 65%;
+        margin: 0 auto;
+    }}
+    
+    @media (max-width: 1200px) {{
+        .main .block-container {{
+            max-width: 75%;
+        }}
+    }}
+    
+    @media (max-width: 768px) {{
+        .main .block-container {{
+            max-width: 95%;
+            padding-top: 4rem;
+        }}
     }}
     
     /* ============================================ */
-    /* 사이드바 - Metallic Silver Glass */
+    /* 사이드바 - Minimal Collapsible Panel */
     /* ============================================ */
     [data-testid="stSidebar"] {{
-        background: rgba(18, 18, 18, 0.95);
+        background: rgba(15, 15, 15, 0.95);
         backdrop-filter: blur(30px);
         -webkit-backdrop-filter: blur(30px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 2px 0 32px rgba(0, 0, 0, 0.6);
     }}
     
     [data-testid="stSidebar"] > div:first-child {{
         background: transparent;
+        padding-top: 1rem;
     }}
     
     /* 사이드바 제목 */
@@ -140,41 +171,43 @@ st.markdown(f"""
     [data-testid="stSidebar"] h3 {{
         color: #FFFFFF;
         font-weight: 600;
-        letter-spacing: -0.03em;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        letter-spacing: -0.02em;
+        font-size: 0.95rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        opacity: 0.9;
     }}
     
     [data-testid="stSidebar"] h3 {{
-        font-size: 1.1rem;
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-        padding-left: 0.5rem;
-        border-left: 3px solid rgba(255, 255, 255, 0.3);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.7;
     }}
     
     /* ============================================ */
-    /* 버튼 - Silver Metallic */
+    /* 버튼 - Minimal & Subtle */
     /* ============================================ */
     .stButton > button {{
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+        background: rgba(255, 255, 255, 0.06);
         color: #FFFFFF;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.65rem 1.25rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         letter-spacing: -0.01em;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }}
     
     .stButton > button:hover {{
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }}
     
     .stButton > button:active {{
@@ -182,66 +215,74 @@ st.markdown(f"""
     }}
     
     /* ============================================ */
-    /* 입력창 - Glass Morphism */
+    /* 입력창 - Subtle & Clean */
     /* ============================================ */
     .stTextInput > div > div > input {{
-        background: rgba(44, 44, 46, 0.6);
+        background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
+        border-radius: 10px;
         color: #FFFFFF;
-        padding: 0.85rem 1.1rem;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
         letter-spacing: -0.01em;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
     }}
     
     .stTextInput > div > div > input:focus {{
-        background: rgba(44, 44, 46, 0.8);
+        background: rgba(255, 255, 255, 0.08);
         outline: none;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
     }}
     
     .stTextInput > div > div > input::placeholder {{
-        color: #6E6E73;
+        color: rgba(255, 255, 255, 0.4);
     }}
     
     /* 텍스트 영역 */
     .stTextArea > div > div > textarea {{
-        background: rgba(44, 44, 46, 0.6);
+        background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
+        border-radius: 10px;
         color: #FFFFFF;
-        padding: 0.85rem 1.1rem;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
         letter-spacing: -0.01em;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
     }}
     
     .stTextArea > div > div > textarea:focus {{
-        background: rgba(44, 44, 46, 0.8);
+        background: rgba(255, 255, 255, 0.08);
         outline: none;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
     }}
     
     .stTextArea > div > div > textarea::placeholder {{
-        color: #6E6E73;
+        color: rgba(255, 255, 255, 0.4);
     }}
     
     /* ============================================ */
-    /* 채팅 메시지 - Midnight Silver Style */
+    /* 채팅 메시지 - Premium Card Style */
     /* ============================================ */
     [data-testid="stChatMessage"] {{
         padding: 0;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
         background: transparent;
         width: 100%;
         display: flex;
+        animation: messageSlideIn 0.3s ease-out;
+    }}
+    
+    @keyframes messageSlideIn {{
+        from {{
+            opacity: 0;
+            transform: translateY(10px);
+        }}
+        to {{
+            opacity: 1;
+            transform: translateY(0);
+        }}
     }}
     
     /* AI 메시지 - 왼쪽 정렬 */
@@ -258,8 +299,8 @@ st.markdown(f"""
     [data-testid="stChatMessage"] > div {{
         display: flex;
         align-items: flex-start;
-        gap: 1rem;
-        max-width: 75%;
+        gap: 0.75rem;
+        max-width: 85%;
     }}
     
     /* AI 메시지 내부 컨테이너 - 왼쪽 정렬 */
@@ -276,203 +317,216 @@ st.markdown(f"""
     /* 아바타 이미지 스타일 */
     [data-testid="stChatMessage"] img {{
         border-radius: 50%;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        width: 40px;
-        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        width: 36px;
+        height: 36px;
         object-fit: cover;
         flex-shrink: 0;
     }}
     
     /* AI 아바타 특별 효과 */
     [data-testid="stChatMessage"][data-message-author="assistant"] img {{
-        background: rgba(255, 255, 255, 0.05);
-        padding: 4px;
-        filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.15));
+        background: rgba(255, 255, 255, 0.03);
+        padding: 2px;
     }}
     
     /* AI 메시지 말풍선 */
     [data-testid="stChatMessage"][data-message-author="assistant"] > div:last-child {{
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid #333333;
-        border-radius: 18px;
-        padding: 1.2rem 1.5rem;
-        color: #E8E8E8;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 1rem 1.25rem;
+        color: #E5E5E5;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
     }}
     
     /* 사용자 메시지 말풍선 */
     [data-testid="stChatMessage"][data-message-author="user"] > div:last-child {{
-        background: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 18px;
-        padding: 1.2rem 1.5rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 1rem 1.25rem;
         color: #FFFFFF;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
     }}
     
     /* 채팅 메시지 텍스트 */
     [data-testid="stChatMessage"] p {{
         color: inherit;
-        line-height: 1.8;
+        line-height: 1.7;
         margin: 0;
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         letter-spacing: -0.01em;
     }}
     
     /* 채팅 메시지 내부 모든 텍스트 요소 */
     [data-testid="stChatMessage"] * {{
-        font-size: 1.1rem !important;
+        font-size: 0.95rem !important;
+    }}
+    
+    [data-testid="stChatMessage"] h1,
+    [data-testid="stChatMessage"] h2,
+    [data-testid="stChatMessage"] h3,
+    [data-testid="stChatMessage"] h4 {{
+        font-size: inherit !important;
     }}
     
     /* ============================================ */
-    /* 채팅 입력창 - Glass Fixed Bottom */
+    /* 채팅 입력창 - Floating Capsule Style */
     /* ============================================ */
     .stChatInput {{
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 1.5rem 2rem;
-        background: rgba(18, 18, 18, 0.85);
+        padding: 1.25rem 2rem;
+        background: rgba(10, 10, 10, 0.9);
         backdrop-filter: blur(30px);
         -webkit-backdrop-filter: blur(30px);
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.6);
         z-index: 999;
     }}
     
     .stChatInput > div {{
-        max-width: 1400px;
+        max-width: 65%;
         margin: 0 auto;
     }}
     
+    @media (max-width: 1200px) {{
+        .stChatInput > div {{
+            max-width: 75%;
+        }}
+    }}
+    
+    @media (max-width: 768px) {{
+        .stChatInput > div {{
+            max-width: 95%;
+        }}
+        .stChatInput {{
+            padding: 1rem 1rem;
+        }}
+    }}
+    
     .stChatInput > div > div > textarea {{
-        background: rgba(44, 44, 46, 0.7) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        border-radius: 16px !important;
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 24px !important;
         color: #FFFFFF !important;
-        padding: 1.2rem 1.5rem !important;
-        font-size: 1.05rem !important;
-        transition: all 0.3s ease !important;
+        padding: 1rem 1.5rem !important;
+        font-size: 0.95rem !important;
+        transition: all 0.2s ease !important;
         letter-spacing: -0.01em !important;
-        backdrop-filter: blur(15px) !important;
-        -webkit-backdrop-filter: blur(15px) !important;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
-        min-height: 60px !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3) !important;
+        min-height: 56px !important;
+        resize: none !important;
     }}
     
     .stChatInput > div > div > textarea:focus {{
-        background: rgba(44, 44, 46, 0.9) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
         outline: none !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05), 0 4px 24px rgba(0, 0, 0, 0.4) !important;
     }}
     
     .stChatInput > div > div > textarea::placeholder {{
-        color: #6E6E73 !important;
-    }}
-    
-    /* ============================================ */
-    /* 정보 카드 위젯 - Glass Card */
-    /* ============================================ */
-    .info-card {{
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        transition: all 0.3s ease;
-    }}
-    
-    .info-card:hover {{
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
-        transform: translateY(-2px);
-    }}
-    
-    .info-card h4 {{
-        color: #FFFFFF;
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 0.8rem;
-        letter-spacing: -0.02em;
-    }}
-    
-    .info-card p {{
-        color: #B8B8B8;
-        font-size: 0.9rem;
-        line-height: 1.6;
-        margin: 0;
+        color: rgba(255, 255, 255, 0.4) !important;
     }}
     
     /* ============================================ */
     /* 라벨 및 기타 요소 */
     /* ============================================ */
     label {{
-        color: #E8E8E8 !important;
+        color: rgba(255, 255, 255, 0.7) !important;
         font-weight: 500;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         letter-spacing: -0.01em;
-        text-transform: uppercase;
         opacity: 0.8;
     }}
     
     /* 성공 메시지 */
     .stSuccess {{
-        background: rgba(52, 199, 89, 0.15);
-        border: 1px solid rgba(52, 199, 89, 0.3);
-        border-radius: 12px;
-        padding: 1rem;
+        background: rgba(52, 199, 89, 0.12);
+        border: 1px solid rgba(52, 199, 89, 0.25);
+        border-radius: 10px;
+        padding: 0.875rem;
         color: #34C759;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
     }}
     
     /* 에러 메시지 */
     .stError {{
-        background: rgba(255, 59, 48, 0.15);
-        border: 1px solid rgba(255, 59, 48, 0.3);
-        border-radius: 12px;
-        padding: 1rem;
+        background: rgba(255, 59, 48, 0.12);
+        border: 1px solid rgba(255, 59, 48, 0.25);
+        border-radius: 10px;
+        padding: 0.875rem;
         color: #FF3B30;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
     }}
     
     /* 구분선 */
     hr {{
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
-        margin: 2rem 0;
+        background: rgba(255, 255, 255, 0.08);
+        margin: 1.5rem 0;
     }}
     
     /* ============================================ */
-    /* 스크롤바 - Minimal Silver */
+    /* 스크롤바 - Minimal */
     /* ============================================ */
     ::-webkit-scrollbar {{
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
     }}
     
     ::-webkit-scrollbar-track {{
-        background: #0a0a0a;
+        background: transparent;
     }}
     
     ::-webkit-scrollbar-thumb {{
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
-        border-radius: 5px;
-        border: 2px solid #0a0a0a;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
     }}
     
     ::-webkit-scrollbar-thumb:hover {{
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+        background: rgba(255, 255, 255, 0.15);
+    }}
+    
+    /* ============================================ */
+    /* 타이핑 인디케이터 */
+    /* ============================================ */
+    .typing-indicator {{
+        display: inline-flex;
+        gap: 4px;
+        padding: 0.5rem 0;
+    }}
+    
+    .typing-indicator span {{
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        animation: typingDot 1.4s infinite;
+    }}
+    
+    .typing-indicator span:nth-child(2) {{
+        animation-delay: 0.2s;
+    }}
+    
+    .typing-indicator span:nth-child(3) {{
+        animation-delay: 0.4s;
+    }}
+    
+    @keyframes typingDot {{
+        0%, 60%, 100% {{
+            transform: translateY(0);
+            opacity: 0.4;
+        }}
+        30% {{
+            transform: translateY(-8px);
+            opacity: 1;
+        }}
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -489,7 +543,7 @@ except:
 
 # 인증되지 않은 경우 잠금 화면 표시
 if not st.session_state.authenticated:
-    # 잠금 화면 CSS 추가 - Midnight Silver & Glass
+    # 잠금 화면 CSS 추가 - Premium Style
     st.markdown("""
     <style>
         .stApp {
@@ -513,45 +567,42 @@ if not st.session_state.authenticated:
             box-sizing: border-box;
         }
         .lock-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
             padding: 3rem 2.5rem;
             width: 100%;
-            max-width: 480px;
-            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6);
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
             text-align: center;
             margin: 0 auto;
         }
         .lock-title {
             color: #FFFFFF;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-            letter-spacing: -0.03em;
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
         }
         .lock-subtitle {
-            color: #B8B8B8;
-            font-size: 0.95rem;
-            margin-bottom: 2.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
             letter-spacing: -0.01em;
         }
         .lock-input-wrapper {
             margin-bottom: 1.5rem;
         }
         .error-message {
-            background: rgba(255, 59, 48, 0.15);
-            border: 1px solid rgba(255, 59, 48, 0.3);
-            border-radius: 12px;
+            background: rgba(255, 59, 48, 0.12);
+            border: 1px solid rgba(255, 59, 48, 0.25);
+            border-radius: 10px;
             color: #FF3B30;
-            padding: 0.9rem;
-            margin-top: 1.2rem;
-            font-size: 0.9rem;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            padding: 0.875rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
             animation: shake 0.4s;
         }
         @keyframes shake {
@@ -598,12 +649,19 @@ if not st.session_state.authenticated:
 
 # --- 인증 성공 후 메인 화면 ---
 
-# 로고 헤더 - 상단 중앙 배치
+# 상단 고정 헤더
 if logo_base64:
     st.markdown(f"""
-    <div class="logo-header">
-        <div class="logo-container">
-            <img src="data:image/png;base64,{logo_base64}" alt="AlphA AI Logo">
+    <div class="app-header">
+        <div class="app-header-content">
+            <div class="app-header-logo">
+                <img src="data:image/png;base64,{logo_base64}" alt="AlphA AI Logo">
+            </div>
+            <div class="app-header-title">
+                <span>AlphA AI</span>
+                <span class="separator">·</span>
+                <span style="opacity: 0.7;">AAA</span>
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
