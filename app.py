@@ -28,12 +28,28 @@ logo_base64 = get_logo_base64()
 st.markdown(f"""
 <style>
     /* ============================================ */
+    /* CSS Variables - Apple Premium Dark Theme */
+    /* ============================================ */
+    :root {{
+        --bg-primary: #000000;
+        --bg-secondary: #1C1C1E;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --text-secondary: #8E8E93;
+        --accent-color: #0A84FF;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --glass-bg: rgba(28, 28, 30, 0.7);
+    }}
+    
+    /* ============================================ */
     /* 폰트 & 기본 설정 */
     /* ============================================ */
     @import url('https://rsms.me/inter/inter.css');
     
     * {{
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }}
     
     /* Streamlit 기본 요소 숨기기 */
@@ -42,20 +58,20 @@ st.markdown(f"""
     header[data-testid="stHeader"] {{display: none;}}
     
     /* ============================================ */
-    /* 전체 앱 배경 - Deep Near-Black with Subtle Gradient */
+    /* 전체 앱 배경 - Deep Premium Black */
     /* ============================================ */
     .stApp {{
-        background: linear-gradient(180deg, #030303 0%, #080808 50%, #0a0a0a 100%);
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+        background: linear-gradient(180deg, var(--bg-primary) 0%, #0a0a0a 50%, var(--bg-secondary) 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Inter', Roboto, Helvetica, Arial, sans-serif;
         min-height: 100vh;
         letter-spacing: -0.011em;
-        color: #E8E8E8;
+        color: var(--text-primary);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }}
     
     /* ============================================ */
-    /* 슬림 상단 앱 바 */
+    /* 슬림 상단 앱 바 - Glassmorphism */
     /* ============================================ */
     .app-header {{
         position: fixed;
@@ -63,16 +79,17 @@ st.markdown(f"""
         left: 0;
         right: 0;
         height: 56px;
-        background: rgba(8, 8, 8, 0.85);
-        backdrop-filter: blur(24px) saturate(180%);
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background: var(--glass-bg);
+        backdrop-filter: blur(40px) saturate(180%);
+        -webkit-backdrop-filter: blur(40px) saturate(180%);
+        border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         justify-content: space-between;
         z-index: 1000;
         padding: 0 2rem;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 20px rgba(0, 0, 0, 0.5);
     }}
     
     .app-header-content {{
@@ -97,13 +114,25 @@ st.markdown(f"""
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+        animation: breathe 4s ease-in-out infinite;
+    }}
+    
+    @keyframes breathe {{
+        0%, 100% {{
+            transform: scale(1);
+            opacity: 1;
+        }}
+        50% {{
+            transform: scale(1.05);
+            opacity: 0.9;
+        }}
     }}
     
     .app-header-logo img {{
         width: 100%;
         height: 100%;
         object-fit: contain;
-        filter: brightness(1.15) contrast(1.05);
+        filter: brightness(1.2) contrast(1.08) drop-shadow(0 0 8px rgba(10, 132, 255, 0.15));
     }}
     
     .app-header-title {{
@@ -211,14 +240,15 @@ st.markdown(f"""
     }}
     
     /* ============================================ */
-    /* 사이드바 - Minimal Slide-in Drawer */
+    /* 사이드바 - Premium Glass Drawer */
     /* ============================================ */
     [data-testid="stSidebar"] {{
-        background: rgba(10, 10, 10, 0.98) !important;
-        backdrop-filter: blur(40px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
-        box-shadow: 4px 0 48px rgba(0, 0, 0, 0.8) !important;
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(60px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(60px) saturate(180%) !important;
+        border-right: 1px solid var(--border-color) !important;
+        box-shadow: 4px 0 64px rgba(0, 0, 0, 0.9), 
+                    inset -1px 0 1px rgba(255, 255, 255, 0.05) !important;
         width: 320px !important;
     }}
     
@@ -255,80 +285,96 @@ st.markdown(f"""
     }}
     
     /* ============================================ */
-    /* 버튼 - Architectural & Minimal */
+    /* 버튼 - Premium Apple Style */
     /* ============================================ */
     .stButton > button {{
-        background: rgba(255, 255, 255, 0.05) !important;
-        color: #FFFFFF !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 10px !important;
-        padding: 0.625rem 1.125rem !important;
+        background: rgba(255, 255, 255, 0.06) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1.25rem !important;
         font-weight: 500 !important;
-        font-size: 0.875rem !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        letter-spacing: -0.01em !important;
-        backdrop-filter: blur(10px) !important;
-        -webkit-backdrop-filter: blur(10px) !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+        font-size: 0.9375rem !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        letter-spacing: -0.015em !important;
+        backdrop-filter: blur(20px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3), 
+                    0 0 1px rgba(255, 255, 255, 0.08) inset !important;
     }}
     
     .stButton > button:hover {{
-        background: rgba(255, 255, 255, 0.09) !important;
-        border-color: rgba(255, 255, 255, 0.15) !important;
-        transform: translateY(-1px) !important;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.16) !important;
+        transform: translateY(-2px) scale(1.01) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 
+                    0 0 1px rgba(255, 255, 255, 0.12) inset !important;
     }}
     
     .stButton > button:active {{
-        transform: translateY(0) !important;
+        transform: translateY(0) scale(0.99) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
     }}
     
     /* ============================================ */
-    /* 입력창 - Clean & Subtle */
+    /* 입력창 - Premium Glassmorphism */
     /* ============================================ */
     .stTextInput > div > div > input {{
-        background: rgba(255, 255, 255, 0.04) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 10px !important;
-        color: #FFFFFF !important;
-        padding: 0.75rem 1rem !important;
-        font-size: 0.875rem !important;
-        transition: all 0.2s ease !important;
-        letter-spacing: -0.01em !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 12px !important;
+        color: var(--text-primary) !important;
+        padding: 0.875rem 1.125rem !important;
+        font-size: 0.9375rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        letter-spacing: -0.015em !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 
+                    0 0 1px rgba(255, 255, 255, 0.06) inset !important;
     }}
     
     .stTextInput > div > div > input:focus {{
-        background: rgba(255, 255, 255, 0.07) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
         outline: none !important;
-        border-color: rgba(255, 255, 255, 0.18) !important;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04) !important;
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.12), 
+                    0 4px 16px rgba(0, 0, 0, 0.3), 
+                    0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+        transform: translateY(-1px) !important;
     }}
     
     .stTextInput > div > div > input::placeholder {{
-        color: rgba(255, 255, 255, 0.4) !important;
+        color: var(--text-secondary) !important;
     }}
     
     /* 텍스트 영역 */
     .stTextArea > div > div > textarea {{
-        background: rgba(255, 255, 255, 0.04) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 10px !important;
-        color: #FFFFFF !important;
-        padding: 0.75rem 1rem !important;
-        font-size: 0.875rem !important;
-        transition: all 0.2s ease !important;
-        letter-spacing: -0.01em !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 12px !important;
+        color: var(--text-primary) !important;
+        padding: 0.875rem 1.125rem !important;
+        font-size: 0.9375rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        letter-spacing: -0.015em !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 
+                    0 0 1px rgba(255, 255, 255, 0.06) inset !important;
     }}
     
     .stTextArea > div > div > textarea:focus {{
-        background: rgba(255, 255, 255, 0.07) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
         outline: none !important;
-        border-color: rgba(255, 255, 255, 0.18) !important;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04) !important;
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.12), 
+                    0 4px 16px rgba(0, 0, 0, 0.3), 
+                    0 0 1px rgba(255, 255, 255, 0.1) inset !important;
     }}
     
     .stTextArea > div > div > textarea::placeholder {{
-        color: rgba(255, 255, 255, 0.4) !important;
+        color: var(--text-secondary) !important;
     }}
     
     /* ============================================ */
@@ -393,32 +439,69 @@ st.markdown(f"""
         flex-shrink: 0 !important;
     }}
     
-    /* AI 아바타 특별 효과 */
+    /* AI 아바타 특별 효과 - Breathing Glow */
     [data-testid="stChatMessage"][data-message-author="assistant"] img {{
         background: rgba(255, 255, 255, 0.02) !important;
         padding: 2px !important;
+        box-shadow: 0 0 0 0 rgba(10, 132, 255, 0) !important;
+        animation: aiAvatarGlow 3s ease-in-out infinite !important;
     }}
     
-    /* AI 메시지 말풍선 */
+    @keyframes aiAvatarGlow {{
+        0%, 100% {{
+            box-shadow: 0 0 8px rgba(10, 132, 255, 0.1), 
+                        0 0 16px rgba(10, 132, 255, 0.05) !important;
+            filter: brightness(1) contrast(1);
+        }}
+        50% {{
+            box-shadow: 0 0 16px rgba(10, 132, 255, 0.2), 
+                        0 0 32px rgba(10, 132, 255, 0.1) !important;
+            filter: brightness(1.1) contrast(1.05);
+        }}
+    }}
+    
+    /* AI 메시지 말풍선 - Glassmorphism */
     [data-testid="stChatMessage"][data-message-author="assistant"] > div:last-child {{
-        background: rgba(255, 255, 255, 0.03) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 18px !important;
-        padding: 1.125rem 1.375rem !important;
-        color: #E8E8E8 !important;
-        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25) !important;
-        line-height: 1.7 !important;
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(20px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 20px !important;
+        padding: 1.25rem 1.5rem !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 
+                    0 0 1px rgba(255, 255, 255, 0.08) inset !important;
+        line-height: 1.75 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }}
     
-    /* 사용자 메시지 말풍선 */
+    [data-testid="stChatMessage"][data-message-author="assistant"] > div:last-child:hover {{
+        border-color: rgba(255, 255, 255, 0.14) !important;
+        box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4), 
+                    0 0 1px rgba(255, 255, 255, 0.12) inset !important;
+    }}
+    
+    /* 사용자 메시지 말풍선 - Premium Blue Accent */
     [data-testid="stChatMessage"][data-message-author="user"] > div:last-child {{
-        background: rgba(255, 255, 255, 0.08) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        border-radius: 18px !important;
-        padding: 1.125rem 1.375rem !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3) !important;
-        line-height: 1.7 !important;
+        background: linear-gradient(135deg, 
+            rgba(10, 132, 255, 0.15) 0%, 
+            rgba(10, 132, 255, 0.08) 100%) !important;
+        backdrop-filter: blur(20px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+        border: 1px solid rgba(10, 132, 255, 0.3) !important;
+        border-radius: 20px !important;
+        padding: 1.25rem 1.5rem !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 4px 20px rgba(10, 132, 255, 0.15), 
+                    0 0 1px rgba(10, 132, 255, 0.2) inset !important;
+        line-height: 1.75 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }}
+    
+    [data-testid="stChatMessage"][data-message-author="user"] > div:last-child:hover {{
+        border-color: rgba(10, 132, 255, 0.4) !important;
+        box-shadow: 0 6px 28px rgba(10, 132, 255, 0.2), 
+                    0 0 1px rgba(10, 132, 255, 0.3) inset !important;
     }}
     
     /* 채팅 메시지 텍스트 */
@@ -443,19 +526,20 @@ st.markdown(f"""
     }}
     
     /* ============================================ */
-    /* 채팅 입력창 - Floating Capsule Style */
+    /* 채팅 입력창 - Premium Floating Bar */
     /* ============================================ */
     .stChatInput {{
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        padding: 1.5rem 2rem !important;
-        background: rgba(8, 8, 8, 0.92) !important;
-        backdrop-filter: blur(32px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
-        box-shadow: 0 -4px 40px rgba(0, 0, 0, 0.7) !important;
+        padding: 1.75rem 2rem !important;
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(60px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(60px) saturate(180%) !important;
+        border-top: 1px solid var(--border-color) !important;
+        box-shadow: 0 -8px 48px rgba(0, 0, 0, 0.8), 
+                    inset 0 1px 1px rgba(255, 255, 255, 0.05) !important;
         z-index: 999 !important;
     }}
     
@@ -486,75 +570,94 @@ st.markdown(f"""
     }}
     
     .stChatInput > div > div > textarea {{
-        background: rgba(255, 255, 255, 0.05) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
         border-radius: 28px !important;
-        color: #FFFFFF !important;
-        padding: 1rem 1.625rem !important;
-        font-size: 0.9375rem !important;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        letter-spacing: -0.01em !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.35) !important;
+        color: var(--text-primary) !important;
+        padding: 1.125rem 1.75rem !important;
+        font-size: 1rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        letter-spacing: -0.015em !important;
+        backdrop-filter: blur(30px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(30px) saturate(150%) !important;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 
+                    0 0 1px rgba(255, 255, 255, 0.1) inset !important;
         min-height: 56px !important;
         resize: none !important;
     }}
     
     .stChatInput > div > div > textarea:focus {{
-        background: rgba(255, 255, 255, 0.07) !important;
+        background: rgba(255, 255, 255, 0.09) !important;
         outline: none !important;
-        border-color: rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04), 0 4px 28px rgba(0, 0, 0, 0.45) !important;
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.15), 
+                    0 6px 32px rgba(0, 0, 0, 0.5), 
+                    0 0 1px rgba(255, 255, 255, 0.12) inset !important;
+        transform: translateY(-2px) !important;
     }}
     
     .stChatInput > div > div > textarea::placeholder {{
-        color: rgba(255, 255, 255, 0.4) !important;
+        color: var(--text-secondary) !important;
+        font-weight: 400 !important;
     }}
     
     /* ============================================ */
     /* 라벨 및 기타 요소 */
     /* ============================================ */
     label {{
-        color: rgba(255, 255, 255, 0.7) !important;
+        color: var(--text-secondary) !important;
         font-weight: 500 !important;
-        font-size: 0.8125rem !important;
-        letter-spacing: -0.01em !important;
-        opacity: 0.85 !important;
+        font-size: 0.875rem !important;
+        letter-spacing: -0.015em !important;
+        opacity: 0.9 !important;
+        transition: color 0.2s ease !important;
     }}
     
-    /* 성공 메시지 */
+    label:hover {{
+        color: rgba(255, 255, 255, 0.8) !important;
+    }}
+    
+    /* 성공 메시지 - Apple Green */
     .stSuccess {{
-        background: rgba(52, 199, 89, 0.12) !important;
-        border: 1px solid rgba(52, 199, 89, 0.25) !important;
-        border-radius: 10px !important;
-        padding: 0.875rem !important;
-        color: #34C759 !important;
+        background: rgba(52, 199, 89, 0.15) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(52, 199, 89, 0.3) !important;
+        border-radius: 12px !important;
+        padding: 1rem 1.125rem !important;
+        color: #32D74B !important;
+        font-weight: 500 !important;
+        box-shadow: 0 2px 12px rgba(52, 199, 89, 0.15) !important;
     }}
     
-    /* 에러 메시지 */
+    /* 에러 메시지 - Apple Red */
     .stError {{
-        background: rgba(255, 59, 48, 0.12) !important;
-        border: 1px solid rgba(255, 59, 48, 0.25) !important;
-        border-radius: 10px !important;
-        padding: 0.875rem !important;
-        color: #FF3B30 !important;
+        background: rgba(255, 59, 48, 0.15) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 59, 48, 0.3) !important;
+        border-radius: 12px !important;
+        padding: 1rem 1.125rem !important;
+        color: #FF453A !important;
+        font-weight: 500 !important;
+        box-shadow: 0 2px 12px rgba(255, 59, 48, 0.15) !important;
     }}
     
-    /* 구분선 */
+    /* 구분선 - Apple Style */
     hr {{
         border: none !important;
         height: 1px !important;
-        background: rgba(255, 255, 255, 0.06) !important;
-        margin: 1.5rem 0 !important;
+        background: var(--border-color) !important;
+        margin: 2rem 0 !important;
+        opacity: 0.8 !important;
     }}
     
     /* ============================================ */
-    /* 스크롤바 - Ultra Minimal */
+    /* 스크롤바 - Minimal & Premium */
     /* ============================================ */
     ::-webkit-scrollbar {{
-        width: 6px;
-        height: 6px;
+        width: 8px;
+        height: 8px;
     }}
     
     ::-webkit-scrollbar-track {{
@@ -562,30 +665,40 @@ st.markdown(f"""
     }}
     
     ::-webkit-scrollbar-thumb {{
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        transition: background 0.2s ease;
     }}
     
     ::-webkit-scrollbar-thumb:hover {{
-        background: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.16);
+        background-clip: padding-box;
+    }}
+    
+    ::-webkit-scrollbar-thumb:active {{
+        background: rgba(255, 255, 255, 0.2);
+        background-clip: padding-box;
     }}
     
     /* ============================================ */
-    /* 타이핑 인디케이터 - Minimal */
+    /* 타이핑 인디케이터 - Apple Style */
     /* ============================================ */
     .typing-indicator {{
         display: inline-flex;
-        gap: 5px;
-        padding: 0.5rem 0;
+        gap: 6px;
+        padding: 0.625rem 0;
         align-items: center;
     }}
     
     .typing-indicator span {{
-        width: 5px;
-        height: 5px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.35);
-        animation: typingDot 1.4s infinite ease-in-out;
+        background: var(--accent-color);
+        animation: typingDot 1.6s infinite ease-in-out;
+        box-shadow: 0 0 8px rgba(10, 132, 255, 0.3);
     }}
     
     .typing-indicator span:nth-child(2) {{
@@ -598,13 +711,25 @@ st.markdown(f"""
     
     @keyframes typingDot {{
         0%, 60%, 100% {{
-            transform: translateY(0);
-            opacity: 0.35;
+            transform: translateY(0) scale(1);
+            opacity: 0.3;
         }}
         30% {{
-            transform: translateY(-6px);
-            opacity: 0.8;
+            transform: translateY(-8px) scale(1.1);
+            opacity: 1;
         }}
+    }}
+    
+    /* ============================================ */
+    /* 추가 시각 효과 - Smooth Transitions */
+    /* ============================================ */
+    * {{
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }}
+    
+    /* 포커스 가시성 제거 (키보드 접근성은 유지) */
+    *:focus-visible {{
+        outline: none !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -621,18 +746,18 @@ except:
 
 # 인증되지 않은 경우 잠금 화면 표시
 if not st.session_state.authenticated:
-    # 잠금 화면 CSS 추가 - Premium Style
-    st.markdown("""
+    # 잠금 화면 CSS 추가 - Premium Apple Style with Enhanced Glassmorphism
+    st.markdown(f"""
     <style>
-        .stApp {
+        .stApp {{
             overflow: hidden !important;
-        }
-        .main .block-container {
+        }}
+        .main .block-container {{
             padding-top: 0 !important;
             padding-bottom: 0 !important;
             max-width: 100% !important;
-        }
-        .lock-screen-wrapper {
+        }}
+        .lock-screen-wrapper {{
             display: flex;
             justify-content: center;
             align-items: center;
@@ -643,95 +768,192 @@ if not st.session_state.authenticated:
             left: 0;
             padding: 2rem;
             box-sizing: border-box;
-        }
-        .lock-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 3.5rem 3rem;
+            background: radial-gradient(circle at 50% 50%, rgba(10, 132, 255, 0.03) 0%, transparent 50%);
+        }}
+        .lock-card {{
+            background: var(--glass-bg);
+            backdrop-filter: blur(60px) saturate(180%);
+            -webkit-backdrop-filter: blur(60px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            padding: 4rem 3.5rem;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
+            max-width: 460px;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.9), 
+                        0 0 1px rgba(255, 255, 255, 0.1) inset;
             text-align: center;
             margin: 0 auto;
-            animation: lockCardAppear 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes lockCardAppear {
-            from {
+            animation: lockCardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }}
+        .lock-card::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            border-radius: 28px 28px 0 0;
+        }}
+        @keyframes lockCardAppear {{
+            from {{
                 opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
+                transform: translateY(24px) scale(0.96);
+            }}
+            to {{
                 opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .lock-title {
-            color: #FFFFFF;
-            font-size: 1.875rem;
+                transform: translateY(0) scale(1);
+            }}
+        }}
+        .lock-logo {{
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 1.5rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            animation: logoGlow 3s ease-in-out infinite;
+        }}
+        .lock-logo img {{
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            filter: brightness(1.2) contrast(1.1);
+        }}
+        @keyframes logoGlow {{
+            0%, 100% {{
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            }}
+            50% {{
+                box-shadow: 0 8px 32px rgba(10, 132, 255, 0.15), 
+                            0 0 40px rgba(10, 132, 255, 0.05);
+            }}
+        }}
+        .lock-title {{
+            color: var(--text-primary);
+            font-size: 2.125rem;
             font-weight: 600;
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.03em;
-        }
-        .lock-subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9375rem;
-            margin-bottom: 2.5rem;
-            letter-spacing: -0.01em;
-        }
-        .lock-input-wrapper {
-            margin-bottom: 1.5rem;
-        }
-        .error-message {
-            background: rgba(255, 59, 48, 0.12);
-            border: 1px solid rgba(255, 59, 48, 0.25);
-            border-radius: 10px;
-            color: #FF3B30;
-            padding: 0.875rem;
-            margin-top: 1rem;
+            margin-bottom: 0.625rem;
+            letter-spacing: -0.04em;
+            line-height: 1.2;
+        }}
+        .lock-subtitle {{
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 2.75rem;
+            letter-spacing: -0.015em;
+            line-height: 1.5;
+            font-weight: 400;
+        }}
+        .error-message {{
+            background: rgba(255, 59, 48, 0.15);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            border-radius: 12px;
+            color: #FF453A;
+            padding: 1rem;
+            margin-top: 1.25rem;
             font-size: 0.875rem;
-            animation: shake 0.4s;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }}
+        @keyframes shake {{
+            0%, 100% {{ transform: translateX(0); }}
+            10%, 30%, 50%, 70%, 90% {{ transform: translateX(-6px); }}
+            20%, 40%, 60%, 80% {{ transform: translateX(6px); }}
+        }}
+        
+        /* 로그인 Form 스타일 개선 */
+        .lock-screen-wrapper .stTextInput > div > div > input {{
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            border-radius: 14px !important;
+            padding: 1rem 1.25rem !important;
+            font-size: 1rem !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-align: center !important;
+        }}
+        .lock-screen-wrapper .stTextInput > div > div > input:focus {{
+            background: rgba(255, 255, 255, 0.09) !important;
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.12), 
+                        0 8px 24px rgba(0, 0, 0, 0.3) !important;
+            transform: translateY(-1px) !important;
+        }}
+        .lock-screen-wrapper .stButton > button {{
+            background: linear-gradient(180deg, 
+                var(--accent-color) 0%, 
+                #0066CC 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 14px !important;
+            padding: 1rem 1.5rem !important;
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            margin-top: 0.75rem !important;
+            box-shadow: 0 4px 16px rgba(10, 132, 255, 0.3) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }}
+        .lock-screen-wrapper .stButton > button:hover {{
+            background: linear-gradient(180deg, 
+                #1F8FFF 0%, 
+                #0077DD 100%) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 24px rgba(10, 132, 255, 0.4) !important;
+        }}
+        .lock-screen-wrapper .stButton > button:active {{
+            transform: translateY(0) !important;
+        }}
     </style>
     """, unsafe_allow_html=True)
     
     # 잠금 화면 UI
     st.markdown('<div class="lock-screen-wrapper">', unsafe_allow_html=True)
-    st.markdown('''
+    
+    # 로고와 타이틀 HTML
+    logo_html = ''
+    if logo_base64:
+        logo_html = f'<div class="lock-logo"><img src="data:image/png;base64,{logo_base64}" alt="AlphA AI"></div>'
+    
+    st.markdown(f'''
     <div class="lock-card">
+        {logo_html}
         <div class="lock-title">AlphA AI</div>
         <div class="lock-subtitle">접근하려면 비밀번호를 입력하세요</div>
     </div>
     ''', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # 입력창과 버튼은 중앙 정렬
+    # Form을 사용하여 Enter 키 지원 추가
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        password_input = st.text_input(
-            "비밀번호", 
-            type="password", 
-            placeholder="••••••••", 
-            label_visibility="collapsed", 
-            key="lock_password"
-        )
-        if st.button("잠금 해제", use_container_width=True, key="lock_submit"):
-            if app_password and password_input == app_password:
-                st.session_state.authenticated = True
-                st.session_state.password_error = False
-                st.rerun()
-            else:
-                st.session_state.password_error = True
+        with st.form(key="login_form", clear_on_submit=False):
+            password_input = st.text_input(
+                "비밀번호", 
+                type="password", 
+                placeholder="••••••••", 
+                label_visibility="collapsed", 
+                key="lock_password"
+            )
+            submit_button = st.form_submit_button("잠금 해제", use_container_width=True)
+            
+            if submit_button:
+                if app_password and password_input == app_password:
+                    st.session_state.authenticated = True
+                    st.session_state.password_error = False
+                    st.rerun()
+                else:
+                    st.session_state.password_error = True
         
         if st.session_state.get("password_error", False):
-            st.markdown('<div class="error-message">비밀번호가 일치하지 않습니다</div>', unsafe_allow_html=True)
+            st.markdown('<div class="error-message">⚠️ 비밀번호가 일치하지 않습니다</div>', unsafe_allow_html=True)
     
     # 잠금 화면에서는 여기서 종료
     st.stop()
